@@ -1,9 +1,9 @@
 'use server'
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client' // <-- Manual import
 import { revalidatePath } from 'next/cache'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient() // <-- Manual new
 
 export async function postMessage(formData: FormData) {
   const content = formData.get('content') as string

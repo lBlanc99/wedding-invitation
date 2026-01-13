@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -15,12 +11,17 @@ datasource db {
 }
 
 model Guest {
-  id        Int       @id @default(autoincrement())
-  code      String    @unique
-  name      String
-  category  String?   // Misal: VIP, Family, Friend
-  messages  Message[]
-  createdAt DateTime  @default(now())
+  id          Int       @id @default(autoincrement())
+  code        String    @unique // Nanti ini di-generate otomatis
+  name        String
+  category    String?   // VIP, Keluarga, Teman (Label aja)
+  inviteType  String    // "Matrimony Only" atau "Reception & Matrimony"
+  createdAt   DateTime  @default(now())
+  
+  eventId     Int       
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  messages    Message[]
 }
 
 model Message {
@@ -32,9 +33,14 @@ model Message {
 }
 
 model Event {
-  id        Int      @id @default(autoincrement())
-  name      String
-  date      DateTime
-  location  String
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  name          String
+  location      String
+  
+  // DUA WAKTU TERPISAH
+  matrimonyDate DateTime // Waktu Akad
+  receptionDate DateTime // Waktu Resepsi
+  
+  createdAt     DateTime @default(now())
+  guests        Guest[]
 }
