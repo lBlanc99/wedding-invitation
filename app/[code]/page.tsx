@@ -1,100 +1,149 @@
 import { PrismaClient } from '@prisma/client'
-import { postMessage, checkGuestCode } from '../actions'
+import { checkGuestCode } from '../actions'
 import { notFound } from 'next/navigation'
-import LiveChat from './LiveChat' // <--- IMPORT INI (Pastikan path-nya benar)
+import LiveChat from './LiveChat'
 
 const prisma = new PrismaClient()
 
-// === KOMPONEN: UNDANGAN TAMU ===
+// --- COMPONENT: ORNAMEN BUNGA (SVG SEDERHANA) ---
+function FloralDivider() {
+  return (
+    <div className="flex justify-center my-6 opacity-40">
+       <svg width="200" height="20" viewBox="0 0 200 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <path d="M100 10C60 10 40 0 0 10C40 20 60 10 100 10Z" fill="#D4AF37"/>
+         <path d="M100 10C140 10 160 0 200 10C160 20 140 10 100 10Z" fill="#D4AF37"/>
+         <circle cx="100" cy="10" r="3" fill="#D4AF37"/>
+       </svg>
+    </div>
+  )
+}
+
+// --- COMPONENT: GUEST INVITATION ---
 function GuestInvitation({ guest, messages }: { guest: any, messages: any[] }) {
-  const optionsDate: Intl.DateTimeFormatOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
-  const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' }
+  // Format Tanggal Estetik
+  const dateStr = guest.event.matrimonyDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  const timeStr = guest.event.matrimonyDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
 
   return (
-    <main className="min-h-screen bg-slate-50 font-sans text-slate-800 pb-20">
-       {/* ... (HEADER dan JADWAL ACARA biarkan sama persis seperti sebelumnya) ... */}
-       <section className="bg-white shadow-sm pt-12 pb-10 px-6 text-center rounded-b-[40px] mb-8 border-b border-slate-100">
-          <h1 className="text-3xl md:text-5xl font-serif text-slate-900 mb-6">{guest.event.name}</h1>
-          <div className="inline-block bg-slate-50 border border-slate-200 px-8 py-5 rounded-2xl shadow-sm">
-            <p className="text-slate-400 text-xs uppercase mb-1 font-medium tracking-wide">Welcome,</p>
-            <h2 className="text-xl font-bold text-slate-900">{guest.name}</h2>
-            <div className="mt-2 flex gap-2 justify-center">
-              {guest.category && <span className="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded uppercase font-bold">{guest.category}</span>}
-              <span className="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded uppercase font-bold">{guest.inviteType}</span>
+    <main className="min-h-screen bg-[#FDFBF7] text-[#4A4A4A] overflow-hidden relative">
+       
+       {/* Background Noise Texture (Optional) */}
+       <div className="absolute inset-0 opacity-40 pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")` }}></div>
+
+       {/* HEADER SECTION */}
+       <section className="relative pt-20 pb-16 px-6 text-center z-10">
+          <p className="font-serif text-[#8A8A8A] tracking-[0.2em] text-xs uppercase mb-4 animate-fade-in-up">The Wedding Of</p>
+          
+          <h1 className="font-script text-6xl md:text-8xl text-[#2C2C2C] mb-6 leading-tight animate-fade-in">
+            {guest.event.name}
+          </h1>
+
+          <FloralDivider />
+
+          <div className="mt-10 mx-auto max-w-sm bg-white/50 backdrop-blur-sm border border-[#E5E0D8] p-8 rounded-t-[100px] rounded-b-[20px] shadow-sm">
+            <p className="font-serif italic text-[#8A8A8A] text-sm mb-2">Dear,</p>
+            <h2 className="font-serif text-2xl font-semibold text-[#2C2C2C] mb-3">{guest.name}</h2>
+            <div className="flex justify-center gap-2">
+               {guest.category && <span className="text-[10px] bg-[#EBEBEB] text-[#5C5C5C] px-3 py-1 rounded-full uppercase tracking-wider">{guest.category}</span>}
+               <span className="text-[10px] bg-[#F3EFE0] text-[#8E7F48] px-3 py-1 rounded-full uppercase tracking-wider border border-[#D4AF37]/20">{guest.inviteType}</span>
             </div>
           </div>
        </section>
 
-       <div className="max-w-md mx-auto px-6 mb-10 space-y-4">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-indigo-500">
-              <h3 className="font-bold text-lg text-indigo-800 mb-1">Akad Nikah</h3>
-              <p className="text-xs text-slate-400 uppercase font-bold mb-3">Holy Matrimony</p>
-              <div className="space-y-1 text-sm">
-                  <p>📅 {guest.event.matrimonyDate.toLocaleDateString('id-ID', optionsDate)}</p>
-                  <p>⏰ {guest.event.matrimonyDate.toLocaleTimeString('id-ID', optionsTime)} WIB</p>
-                  <p>📍 {guest.event.location}</p>
+       {/* EVENT DETAILS */}
+       <div className="max-w-2xl mx-auto px-6 mb-16 space-y-6 relative z-10">
+          
+          {/* Card Matrimony */}
+          <div className="bg-white border border-[#F0EAE0] p-8 text-center rounded-lg shadow-sm hover:shadow-md transition-shadow duration-500">
+              <h3 className="font-serif text-3xl text-[#2C2C2C] mb-2">Holy Matrimony</h3>
+              <p className="font-sans text-xs text-[#D4AF37] uppercase tracking-[0.2em] mb-6">Save The Date</p>
+              
+              <div className="space-y-3 font-serif text-lg text-[#5C5C5C]">
+                  <p className="border-b border-[#F0EAE0] pb-3 mx-10">{dateStr}</p>
+                  <p className="text-3xl my-4 font-script text-[#2C2C2C]">{timeStr} <span className="text-base font-sans">WIB</span></p>
+                  <p className="text-sm font-sans uppercase tracking-wide text-[#8A8A8A]">{guest.event.location}</p>
               </div>
           </div>
 
+          {/* Card Reception (Kondisional) */}
           {guest.inviteType === 'Reception & Matrimony' && (
-             <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-pink-500">
-                <h3 className="font-bold text-lg text-pink-700 mb-1">Resepsi Pernikahan</h3>
-                <p className="text-xs text-slate-400 uppercase font-bold mb-3">Wedding Reception</p>
-                <div className="space-y-1 text-sm">
-                    <p>📅 {guest.event.receptionDate.toLocaleDateString('id-ID', optionsDate)}</p>
-                    <p>⏰ {guest.event.receptionDate.toLocaleTimeString('id-ID', optionsTime)} WIB</p>
-                    <p>📍 {guest.event.location}</p>
+             <div className="bg-[#2C2C2C] text-[#FDFBF7] p-8 text-center rounded-lg shadow-lg relative overflow-hidden">
+                {/* Dekorasi lingkaran emas */}
+                <div className="absolute -top-10 -left-10 w-20 h-20 border border-[#D4AF37] rounded-full opacity-20"></div>
+                <div className="absolute -bottom-10 -right-10 w-20 h-20 border border-[#D4AF37] rounded-full opacity-20"></div>
+
+                <h3 className="font-serif text-3xl text-[#FDFBF7] mb-2">Wedding Reception</h3>
+                <p className="font-sans text-xs text-[#D4AF37] uppercase tracking-[0.2em] mb-6">Celebrate With Us</p>
+                
+                <div className="space-y-3 font-serif text-lg text-[#DCDCDC]">
+                    <p className="border-b border-[#555] pb-3 mx-10">
+                      {guest.event.receptionDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                    </p>
+                    <p className="text-3xl my-4 font-script text-[#D4AF37]">
+                      {guest.event.receptionDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} <span className="text-base font-sans">WIB</span>
+                    </p>
+                    <p className="text-sm font-sans uppercase tracking-wide text-[#999]">{guest.event.location}</p>
                 </div>
              </div>
           )}
        </div>
 
-       {/* INI BAGIAN YANG DIGANTI */}
-       <section className="max-w-md mx-auto px-4">
-         {/* Panggil Component LiveChat disini */}
+       {/* CHAT SECTION */}
+       <section className="max-w-md mx-auto px-4 pb-20 relative z-10">
          <LiveChat messages={messages} guestCode={guest.code} />
        </section>
+
+       {/* Footer Simple */}
+       <footer className="text-center pb-8 text-[#8A8A8A] text-[10px] font-sans tracking-widest uppercase opacity-50">
+          Created with Love for {guest.event.name}
+       </footer>
 
     </main>
   )
 }
 
-// ... (Sisanya: Function EventLanding dan Page Utama biarkan sama) ...
+// --- COMPONENT: EVENT LANDING (LOGIN) ---
 function EventLanding({ event }: { event: any }) {
-  // ... (Code sama persis kayak sebelumnya)
   return (
-    <main className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600 rounded-full blur-[150px] opacity-20 animate-pulse"></div>
+    <main className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Abstract */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-50 pointer-events-none">
+         <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] bg-[#F3EFE0] rounded-full blur-[80px]"></div>
+         <div className="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-[#EAE0D5] rounded-full blur-[80px]"></div>
+      </div>
       
-      <div className="relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl text-center text-white shadow-2xl">
-        <p className="text-indigo-300 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">The Wedding Of</p>
-        <h1 className="text-3xl font-serif mb-2">{event.name}</h1>
-        <p className="text-slate-300 text-sm mb-8">📍 {event.location}</p>
+      <div className="relative z-10 w-full max-w-md bg-white/60 backdrop-blur-md border border-[#E5E0D8] p-10 rounded-2xl text-center shadow-xl">
+        <p className="font-serif text-[#8A8A8A] tracking-[0.2em] text-xs uppercase mb-4">You Are Invited To</p>
+        <h1 className="font-script text-5xl text-[#2C2C2C] mb-6">{event.name}</h1>
+        <p className="font-sans text-[#5C5C5C] text-sm mb-10 border-b border-[#E5E0D8] pb-6 mx-10 tracking-wide uppercase">
+          {event.location}
+        </p>
 
-        <form action={checkGuestCode} className="flex flex-col gap-4">
+        <form action={checkGuestCode} className="flex flex-col gap-5">
           <div className="text-left">
-            <label className="text-xs text-slate-400 ml-1 mb-1 block font-bold uppercase tracking-wide">Kode Akses Tamu</label>
+            <label className="text-[10px] text-[#8A8A8A] ml-1 mb-1 block font-bold uppercase tracking-widest">Invitation Code</label>
             <input 
               name="guestCode" 
-              className="w-full bg-slate-800/50 border border-slate-600 rounded-xl p-4 text-center text-xl tracking-[0.2em] font-mono text-white focus:outline-none focus:border-indigo-500 transition placeholder:text-slate-600"
-              placeholder="XXXXXX"
+              className="w-full bg-[#FAFAFA] border border-[#E5E0D8] rounded-lg p-4 text-center text-xl tracking-[0.3em] font-serif text-[#2C2C2C] focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition placeholder:text-gray-200 uppercase"
+              placeholder="CODE"
               required 
               autoComplete="off"
             />
           </div>
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-indigo-500/30 mt-2">
-            Buka Undangan Saya
+          <button className="bg-[#2C2C2C] hover:bg-[#1a1a1a] text-[#D4AF37] font-sans text-xs font-bold uppercase tracking-widest py-4 rounded-lg transition shadow-lg mt-2 border border-[#D4AF37]/20">
+            Open Invitation
           </button>
         </form>
 
-        <p className="text-xs text-slate-500 mt-6 leading-relaxed">
-          Silakan masukkan kode unik yang tertera pada undangan fisik atau pesan WhatsApp Anda untuk melihat detail acara.
+        <p className="text-[10px] text-[#8A8A8A] mt-8 font-serif italic">
+          Please enter the access code provided in your physical invitation or message.
         </p>
       </div>
     </main>
   )
 }
 
+// --- ROUTER UTAMA ---
 export default async function Page({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params
   
