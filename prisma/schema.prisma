@@ -14,6 +14,7 @@ model Guest {
   name        String
   category    String?
   inviteType  String
+  pax         Int       @default(1) // <--- TAMBAHKAN INI (Jumlah Pax)
   createdAt   DateTime  @default(now())
   
   eventId     Int       
