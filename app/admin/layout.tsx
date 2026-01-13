@@ -8,13 +8,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ADMIN PANEL
         </div>
         <nav className="flex flex-col p-4 gap-2">
-          {/* Menu ini sekarang jadi utama */}
-          <Link href="/admin/events" className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded transition text-slate-300 hover:text-white">
+          <Link href="/admin/events" className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded transition text-white font-bold bg-slate-800">
              <span>📅</span> Dashboard Event
           </Link>
-          
           <div className="h-px bg-slate-800 my-4"></div>
-          
           <Link href="/" target="_blank" className="flex items-center gap-3 p-3 text-sm text-slate-500 hover:text-slate-300">
             <span>↗️</span> Buka Website
           </Link>

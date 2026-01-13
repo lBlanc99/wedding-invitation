@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export const config = {
-  matcher: ['/admin/:path*'], // Kunci semua folder admin
+  matcher: ['/admin/:path*'],
 }
 
 export function middleware(req: NextRequest) {
@@ -11,7 +11,6 @@ export function middleware(req: NextRequest) {
     const authValue = basicAuth.split(' ')[1]
     const [user, pwd] = atob(authValue).split(':')
 
-    // === SETTING USERNAME & PASSWORD ADMIN DISINI ===
     if (user === 'admin' && pwd === 'wedding2025') {
       return NextResponse.next()
     }
