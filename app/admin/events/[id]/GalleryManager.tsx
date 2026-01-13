@@ -6,30 +6,23 @@ import Swal from 'sweetalert2'
 
 export default function GalleryManager({ event }: { event: any }) {
 
-  // Handler Upload
   async function handleUpload(formData: FormData) {
+    const file = formData.get('image') as File
+    if(file.size === 0) return
+
     try {
-      // Validasi kecil di client
-      const file = formData.get('image') as File
-      if(file.size === 0) return
-
-      // Loading State (Opsional, pakai Swal Loading)
       Swal.fire({ title: 'Uploading...', didOpen: () => Swal.showLoading() })
-
       await uploadEventImage(formData)
-      
       Swal.fire({ icon: 'success', title: 'Uploaded!', timer: 1500, showConfirmButton: false })
     } catch (e) {
-      Swal.fire({ icon: 'error', title: 'Gagal Upload', text: 'Coba lagi nanti.' })
+      Swal.fire({ icon: 'error', title: 'Gagal Upload' })
     }
   }
 
-  // Handler Hapus (Dengan Konfirmasi)
   async function handleDelete(imageId: number, imageUrl: string) {
-    // Tanya dulu yakin gak?
     const result = await Swal.fire({
-      title: 'Hapus foto ini?',
-      text: "Tidak bisa dikembalikan loh!",
+      title: 'Hapus foto?',
+      text: "Tidak bisa dikembalikan.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -40,7 +33,7 @@ export default function GalleryManager({ event }: { event: any }) {
     if (result.isConfirmed) {
       try {
         await deleteEventImage(imageId, imageUrl, event.id)
-        Swal.fire('Deleted!', 'Foto berhasil dihapus.', 'success')
+        Swal.fire('Deleted!', 'Foto terhapus.', 'success')
       } catch (e) {
         Swal.fire('Error', 'Gagal menghapus.', 'error')
       }
@@ -65,7 +58,6 @@ export default function GalleryManager({ event }: { event: any }) {
                   unoptimized 
                 />
                 
-                {/* Tombol Hapus pakai onClick biar bisa munculin Modal Konfirmasi */}
                 <button 
                   onClick={() => handleDelete(img.id, img.url)}
                   className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition duration-200 scale-90 group-hover:scale-100 bg-white/90 text-red-500 w-7 h-7 rounded-full flex items-center justify-center text-xs shadow-sm hover:bg-red-500 hover:text-white border border-red-100 cursor-pointer z-10"

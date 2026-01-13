@@ -1,23 +1,33 @@
-import Link from 'next/link'
+import { logout } from '../login/action' // Import action logout
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans">
-      <aside className="w-full md:w-64 bg-slate-900 text-white flex-shrink-0">
-        <div className="p-6 text-xl font-bold tracking-wider border-b border-slate-800">
-          ADMIN PANEL
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+      {/* NAVBAR SEDERHANA */}
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex items-center">
+              <span className="text-lg font-bold text-slate-900 tracking-tight">Admin<span className="text-indigo-600">Panel</span></span>
+            </div>
+            <div className="flex items-center">
+              <form action={logout}>
+                <button className="text-sm font-medium text-slate-500 hover:text-red-600 transition flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-50">
+                  <span>Logout</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
-        <nav className="flex flex-col p-4 gap-2">
-          <Link href="/admin/events" className="flex items-center gap-3 p-3 hover:bg-slate-800 rounded transition text-white font-bold bg-slate-800">
-             <span>📅</span> Dashboard Event
-          </Link>
-          <div className="h-px bg-slate-800 my-4"></div>
-          <Link href="/" target="_blank" className="flex items-center gap-3 p-3 text-sm text-slate-500 hover:text-slate-300">
-            <span>↗️</span> Buka Website
-          </Link>
-        </nav>
-      </aside>
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto">
+      </nav>
+
+      {/* CONTENT */}
+      <main className="py-10">
         {children}
       </main>
     </div>

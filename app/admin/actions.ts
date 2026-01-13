@@ -149,6 +149,9 @@ export async function addGuest(formData: FormData) {
   const inviteType = formData.get('inviteType') as string
   const eventId = parseInt(formData.get('eventId') as string)
   
+  // Ambil data pax, kalau kosong default 1
+  const pax = parseInt(formData.get('pax') as string) || 1 
+  
   if(!name) return
 
   let code = generateCode()
@@ -160,8 +163,27 @@ export async function addGuest(formData: FormData) {
   }
 
   await prisma.guest.create({ 
-    data: { name, code, category, inviteType, eventId } 
+    data: { name, code, category, inviteType, eventId, pax } // <--- Simpan pax
   })
+  revalidatePath(`/admin/events/${eventId}`)
+}
+
+export async function updateGuest(formData: FormData) {
+  const id = parseInt(formData.get('id') as string)
+  const eventId = parseInt(formData.get('eventId') as string)
+  
+  const name = formData.get('name') as string
+  const pax = parseInt(formData.get('pax') as string)
+  const category = formData.get('category') as string
+  const inviteType = formData.get('inviteType') as string
+
+  if (!id || !name) return
+
+  await prisma.guest.update({
+    where: { id },
+    data: { name, pax, category, inviteType }
+  })
+
   revalidatePath(`/admin/events/${eventId}`)
 }
 
