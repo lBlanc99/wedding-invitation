@@ -40,8 +40,11 @@ export async function postMessage(formData: FormData) {
 // === EVENT ACTIONS ===
 export async function addEvent(formData: FormData) {
   const name = formData.get('name') as string
-  const location = formData.get('location') as string
-  // Tambahkan timezone WIB (+07:00) ke string input
+  // AMBIL 2 LOKASI
+  const matrimonyLocation = formData.get('matrimonyLocation') as string
+  const receptionLocation = formData.get('receptionLocation') as string
+  
+  // Tambahkan timezone WIB (+07:00)
   const matrimonyStr = formData.get('matrimonyDate') as string + ":00+07:00"
   const receptionStr = formData.get('receptionDate') as string + ":00+07:00"
   
@@ -51,12 +54,16 @@ export async function addEvent(formData: FormData) {
   } else {
     slug = slug.trim().toLowerCase().replace(/\s+/g, '-')
   }
+
+  // Cek slug unik
   const existing = await prisma.event.findUnique({ where: { slug } })
   if (existing) slug = generateCode(6)
   
   await prisma.event.create({
     data: { 
-      name, slug, location, 
+      name, slug, 
+      matrimonyLocation, // Simpan lokasi akad
+      receptionLocation, // Simpan lokasi resepsi
       matrimonyDate: new Date(matrimonyStr),
       receptionDate: new Date(receptionStr)
     }
@@ -68,8 +75,11 @@ export async function updateEvent(formData: FormData) {
   const id = parseInt(formData.get('id') as string)
   const name = formData.get('name') as string
   const slugInput = formData.get('slug') as string
-  const location = formData.get('location') as string
-  // Tambahkan timezone WIB (+07:00) ke string input
+  
+  // AMBIL 2 LOKASI
+  const matrimonyLocation = formData.get('matrimonyLocation') as string
+  const receptionLocation = formData.get('receptionLocation') as string
+
   const matrimonyStr = formData.get('matrimonyDate') as string + ":00+07:00"
   const receptionStr = formData.get('receptionDate') as string + ":00+07:00"
 
@@ -79,7 +89,9 @@ export async function updateEvent(formData: FormData) {
   await prisma.event.update({
     where: { id },
     data: { 
-      name, slug, location, 
+      name, slug, 
+      matrimonyLocation, 
+      receptionLocation,
       matrimonyDate: new Date(matrimonyStr),
       receptionDate: new Date(receptionStr)
     }

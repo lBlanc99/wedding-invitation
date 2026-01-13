@@ -19,7 +19,8 @@ model Guest {
   
   eventId     Int       
   event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
-
+  checkInMatrimonyTime DateTime? 
+  checkInReceptionTime DateTime?
   messages    Message[]
 }
 
@@ -32,17 +33,22 @@ model Message {
 }
 
 model Event {
-  id            Int      @id @default(autoincrement())
-  name          String
-  slug          String   @unique
-  location      String
-  matrimonyDate DateTime
-  receptionDate DateTime
+  id                Int          @id @default(autoincrement())
+  name              String
+  slug              String       @unique
   
-  images        EventImage[] // Relasi ke tabel gambar
-
-  createdAt     DateTime @default(now())
-  guests        Guest[]
+  // GANTI location LAMA DENGAN 2 INI:
+  matrimonyLocation String
+  receptionLocation String
+  
+  matrimonyDate     DateTime
+  receptionDate     DateTime
+  
+  images            EventImage[]
+  guests            Guest[]
+  
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 // Model baru untuk simpan URL gambar

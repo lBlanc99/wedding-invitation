@@ -22,9 +22,9 @@ function FloralDivider() {
 
 // --- KOMPONEN HALAMAN UNDANGAN (UNTUK TAMU) ---
 function GuestInvitation({ guest, messages }: { guest: any, messages: any[] }) {
-  const dateStr = guest.event.matrimonyDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  const dateStr = guest.event.matrimonyDate.toLocaleDateString('id-ID', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
   const timeStr = guest.event.matrimonyDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-
+  const dateStrReception = guest.event.receptionDate.toLocaleDateString('id-ID', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
   // LOGIC FOTO HERO
   const hasImages = guest.event.images && guest.event.images.length > 0
   const heroPhotoUrl = hasImages 
@@ -95,7 +95,9 @@ function GuestInvitation({ guest, messages }: { guest: any, messages: any[] }) {
                  <div className="space-y-4 font-serif text-lg text-[#5C5C5C] relative z-10">
                     <p className="border-b border-[#F0EAE0] pb-4 mx-12 tracking-wide">{dateStr}</p>
                     <p className="text-4xl my-6 font-script text-[#2C2C2C] drop-shadow-sm">{timeStr} <span className="text-base font-sans font-bold text-[#D4AF37]">WIB</span></p>
-                    <p className="text-sm font-sans uppercase tracking-widest text-[#8A8A8A] font-semibold">{guest.event.location}</p>
+                    
+                    {/* LOKASI AKAD */}
+                    <p className="text-sm font-sans uppercase tracking-widest text-[#8A8A8A] font-semibold">{guest.event.matrimonyLocation}</p>
                  </div>
              </div>
            )}
@@ -108,9 +110,11 @@ function GuestInvitation({ guest, messages }: { guest: any, messages: any[] }) {
                 <h3 className="font-serif text-3xl text-[#FDFBF7] mb-2 relative z-10">Wedding Reception</h3>
                 <p className="font-sans text-xs text-[#D4AF37] uppercase tracking-[0.2em] mb-8 relative z-10 font-bold">Celebrate With Us</p>
                  <div className="space-y-4 font-serif text-lg text-[#DCDCDC] relative z-10">
-                     <p className="border-b border-[#555] pb-4 mx-12 tracking-wide">{guest.event.receptionDate.toLocaleDateString('en-US')}</p>
+                     <p className="border-b border-[#F0EAE0] pb-4 mx-12 tracking-wide">{dateStrReception}</p>
                      <p className="text-4xl my-6 font-script text-[#D4AF37] drop-shadow-sm">{guest.event.receptionDate.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})} WIB</p>
-                     <p className="text-sm font-sans uppercase tracking-widest text-[#999] font-semibold">{guest.event.location}</p>
+                     
+                     {/* LOKASI RESEPSI */}
+                     <p className="text-sm font-sans uppercase tracking-widest text-[#999] font-semibold">{guest.event.receptionLocation}</p>
                  </div>
              </div>
            )}
@@ -121,7 +125,7 @@ function GuestInvitation({ guest, messages }: { guest: any, messages: any[] }) {
          <GuestQRCode 
             guestName={guest.name} 
             guestCode={guest.code} 
-            guestPax={guest.pax} // <-- Data Pax Dioper Kesini
+            guestPax={guest.pax} 
          />
        </section>
 
@@ -160,7 +164,13 @@ function EventLanding({ event }: { event: any }) {
       <div className="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl border border-white/60 p-10 rounded-[40px] text-center shadow-2xl">
         <p className="font-serif text-[#8A8A8A] tracking-[0.3em] text-xs uppercase mb-4 font-bold">You Are Invited To</p>
         <h1 className="font-script text-6xl text-[#2C2C2C] mb-6 drop-shadow-sm">{event.name}</h1>
-        <p className="font-sans text-[#5C5C5C] text-sm mb-10 border-b border-[#E5E0D8] pb-6 mx-10 tracking-wide uppercase font-semibold">{event.location}</p>
+        
+        {/* TAMPILAN DUA LOKASI */}
+        <div className="font-sans text-[#5C5C5C] text-sm mb-10 border-b border-[#E5E0D8] pb-6 mx-10 font-semibold space-y-1">
+          <p className="uppercase tracking-wide">{event.matrimonyLocation}</p>
+          <p className="text-[10px] text-[#8A8A8A]">&</p>
+          <p className="uppercase tracking-wide">{event.receptionLocation}</p>
+        </div>
         
         <form action={checkGuestCode} className="flex flex-col gap-5">
           <input 
