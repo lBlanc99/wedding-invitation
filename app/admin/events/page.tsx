@@ -40,11 +40,11 @@ export default async function EventListPage() {
           </div>
 
           <div>
-             <label className="text-xs font-bold text-slate-500 uppercase text-indigo-600">Waktu Akad</label>
+             <label className="text-xs font-bold text-slate-500 uppercase text-indigo-600">Matrimony</label>
              <input type="datetime-local" name="matrimonyDate" className="border p-2 rounded w-full mt-1 text-slate-600" required />
           </div>
           <div>
-             <label className="text-xs font-bold text-slate-500 uppercase text-pink-600">Waktu Resepsi</label>
+             <label className="text-xs font-bold text-slate-500 uppercase text-pink-600">Reception Event</label>
              <input type="datetime-local" name="receptionDate" className="border p-2 rounded w-full mt-1 text-slate-600" required />
           </div>
 
@@ -72,11 +72,11 @@ export default async function EventListPage() {
               
               <div className="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-3 rounded-lg">
                 <div>
-                   <span className="block font-bold text-indigo-600">Akad</span>
+                   <span className="block font-bold text-indigo-600">Matrimony</span>
                    {event.matrimonyDate.toLocaleDateString('id-ID', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}
                 </div>
                 <div>
-                   <span className="block font-bold text-pink-600">Resepsi</span>
+                   <span className="block font-bold text-pink-600">Reception</span>
                    {event.receptionDate.toLocaleDateString('id-ID', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}
                 </div>
               </div>

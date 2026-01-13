@@ -10,10 +10,10 @@ datasource db {
 
 model Guest {
   id          Int       @id @default(autoincrement())
-  code        String    @unique // Kode unik tamu (auto-generate)
+  code        String    @unique
   name        String
-  category    String?   // Label: VIP, Keluarga, dll
-  inviteType  String    // "Matrimony Only" atau "Reception & Matrimony"
+  category    String?
+  inviteType  String
   createdAt   DateTime  @default(now())
   
   eventId     Int       
@@ -33,10 +33,23 @@ model Message {
 model Event {
   id            Int      @id @default(autoincrement())
   name          String
-  slug          String   @unique // Kode Event (misal: romeo-juliet)
+  slug          String   @unique
   location      String
   matrimonyDate DateTime
   receptionDate DateTime
+  
+  images        EventImage[] // Relasi ke tabel gambar
+
   createdAt     DateTime @default(now())
   guests        Guest[]
+}
+
+// Model baru untuk simpan URL gambar
+model EventImage {
+  id        Int      @id @default(autoincrement())
+  url       String   
+  createdAt DateTime @default(now())
+  
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }

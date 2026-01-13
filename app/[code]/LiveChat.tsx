@@ -7,10 +7,7 @@ import { postMessage } from '../actions'
 type Message = {
   id: number
   content: string
-  guest: {
-    code: string
-    name: string
-  }
+  guest: { code: string; name: string }
 }
 
 export default function LiveChat({ messages, guestCode }: { messages: Message[], guestCode: string }) {
@@ -56,23 +53,9 @@ export default function LiveChat({ messages, guestCode }: { messages: Message[],
       <div className="p-4 bg-white border-t border-[#E5E0D8] relative">
         <form ref={formRef} action={handleSubmit} className="relative">
           <input type="hidden" name="guestCode" value={guestCode} />
-          <textarea 
-            name="content" 
-            rows={2} 
-            className="w-full bg-[#F5F5F0] rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] pr-12 resize-none text-[#5C5C5C] placeholder:text-gray-400 placeholder:italic" 
-            placeholder="Write a message..." 
-            required 
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                formRef.current?.requestSubmit()
-              }
-            }}
-          />
+          <textarea name="content" rows={2} className="w-full bg-[#F5F5F0] rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#D4AF37] pr-12 resize-none text-[#5C5C5C] placeholder:text-gray-400 placeholder:italic" placeholder="Write a message..." required onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); formRef.current?.requestSubmit(); } }} />
           <button type="submit" className="absolute right-3 bottom-4 text-[#D4AF37] hover:text-[#B59020] transition p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
           </button>
         </form>
       </div>

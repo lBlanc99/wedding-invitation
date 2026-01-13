@@ -72,9 +72,9 @@ export default async function GuestPage() {
                   )}
                 </td>
                 <td className="p-4 text-right">
-                  <form action={deleteGuest.bind(null, guest.id)}>
+                  {/* <form action={deleteGuest.bind(null, guest.id)}>
                     <button className="text-slate-400 hover:text-red-600 font-medium transition">Hapus</button>
-                  </form>
+                  </form> */}
                 </td>
               </tr>
             ))}
